@@ -1,3 +1,4 @@
 #!/bin/sh
 
 /usr/local/bin/automysqlbackup > /dev/null 2>&1
+

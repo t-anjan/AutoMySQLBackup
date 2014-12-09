@@ -400,12 +400,27 @@ parse_config_file () {
   fi
 }
 
+prompt_cron () {
+  while true; do
+    read -p "Cron schedule? [N/d/w/m] " ndwm
+    [[ "x$ndwm" = "x" ]]
+    case $ndwm in
+      [Nn]* ) cronsch='';;
+      [Dd]* ) cronsch='daily';;
+      [Ww]* ) cronsch='weekly';;
+      [Mm]* ) cronsch='monthly';;
+      * ) echo "Please choose between none, day, week or month.";;
+    esac
+  done
+}
+
 #precheck
 echo "### Checking archive files for existence, readability and integrity."
 echo
 
 precheck_files=( automysqlbackup f82d86429134d0636d14e8b89d3fd179
 automysqlbackup.conf f87cda77cf6b89c882a91da5f787605a
+cron 84dd4d858d3f3de017be1ba78169c337
 README b17740fcd3a5f8579b907a42249a83cd
 LICENSE 39bba7d2cf0ba1036f2a6e2be52fe3f0
 )
@@ -438,6 +453,7 @@ printf 'Select directory for the executable [/usr/local/bin]: '
 read bindir
 bindir="${bindir%/}" # strip trailing slash if there
 [[ "x$bindir" = "x" ]] && bindir='/usr/local/bin'
+prompt_cron
 
 #create global config directory
 echo "### Creating global configuration directory ${configdir}:"
@@ -471,10 +487,12 @@ echo
 echo "### Copying files."
 echo
 cp -i automysqlbackup.conf LICENSE README "${configdir}"/
-cp -i automysqlbackup.conf "${configdir}"/myserver.conf
+#cp -i automysqlbackup.conf "${configdir}"/myserver.conf
 cp -i automysqlbackup "${bindir}"/
-cp -i cron /etc/cron.weekly/automysqlbackup
-chmod +x /etc/cron.weekly/automysqlbackup
+if [ -z "${cronsch}" ]; then
+  cp -i cron /etc/cron."${cronsch}"/automysqlbackup
+  chmod +x /etc/cron."${cronsch}"/automysqlbackup
+fi
 [[ -f "${bindir}"/automysqlbackup ]] && [[ -x "${bindir}"/automysqlbackup ]] || chmod +x "${bindir}"/automysqlbackup || echo " failed - make sure you make the program executable, i.e. run 'chmod +x ${bindir}/automysqlbackup'"
 echo
 
