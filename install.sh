@@ -453,6 +453,7 @@ read bindir
 bindir="${bindir%/}" # strip trailing slash if there
 [[ "x$bindir" = "x" ]] && bindir='/usr/local/bin'
 prompt_cron
+printf "Cron will be installed to run ${cronsch}"
 
 #create global config directory
 echo "### Creating global configuration directory ${configdir}:"
