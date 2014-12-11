@@ -403,7 +403,6 @@ parse_config_file () {
 prompt_cron () {
   while true; do
     read -p "Cron schedule? [N/d/w/m] " ndwm
-    [[ "x$ndwm" = "x" ]]
     case $ndwm in
       [Nn]* ) cronsch='';;
       [Dd]* ) cronsch='daily';;
