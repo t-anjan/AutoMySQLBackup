@@ -453,7 +453,7 @@ read bindir
 bindir="${bindir%/}" # strip trailing slash if there
 [[ "x$bindir" = "x" ]] && bindir='/usr/local/bin'
 prompt_cron
-printf "Cron will be installed to run ${cronsch}"
+printf "Cron will be installed to run ${cronsch} \n\n"
 
 #create global config directory
 echo "### Creating global configuration directory ${configdir}:"
@@ -489,7 +489,7 @@ echo
 cp -i automysqlbackup.conf LICENSE README "${configdir}"/
 #cp -i automysqlbackup.conf "${configdir}"/myserver.conf
 cp -i automysqlbackup "${bindir}"/
-if [ -z "${cronsch}" ]; then
+if [ ! -z "${cronsch}" ]; then
   cp -i cron /etc/cron."${cronsch}"/automysqlbackup
   chmod +x /etc/cron."${cronsch}"/automysqlbackup
 fi
