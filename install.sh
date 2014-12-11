@@ -404,10 +404,10 @@ prompt_cron () {
   while true; do
     read -p "Cron schedule? [N/d/w/m] " ndwm
     case $ndwm in
-      [Nn]* ) cronsch='';;
-      [Dd]* ) cronsch='daily';;
-      [Ww]* ) cronsch='weekly';;
-      [Mm]* ) cronsch='monthly';;
+      [Nn]* ) cronsch=''; break;;
+      [Dd]* ) cronsch='daily'; break;;
+      [Ww]* ) cronsch='weekly'; break;;
+      [Mm]* ) cronsch='monthly'; break;;
       * ) echo "Please choose between none, day, week or month.";;
     esac
   done
