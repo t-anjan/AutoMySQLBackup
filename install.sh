@@ -418,7 +418,7 @@ echo "### Checking archive files for existence, readability and integrity."
 echo
 
 precheck_files=( automysqlbackup f82d86429134d0636d14e8b89d3fd179
-automysqlbackup.conf f87cda77cf6b89c882a91da5f787605a
+automysqlbackup.conf 203d4903cdc9a800c6daca080c43e8a1
 cron 84dd4d858d3f3de017be1ba78169c337
 README b17740fcd3a5f8579b907a42249a83cd
 LICENSE 39bba7d2cf0ba1036f2a6e2be52fe3f0
