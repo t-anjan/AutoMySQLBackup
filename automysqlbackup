@@ -56,7 +56,7 @@ let "N_backup_local_nofiles=0x20"
 # @deps:	(none)
 load_default_config() {
   CONFIG_configfile="/etc/automysqlbackup/automysqlbackup.conf"
-  CONFIG_backup_dir='/backup/db'
+  CONFIG_backup_dir='/backup/$HOSTNAME/DB'
   CONFIG_multicore='yes'
   CONFIG_multicore_threads=2
   CONFIG_do_monthly="01"
@@ -871,6 +871,10 @@ directory_checks_enable_logging () {
     #      Y -> log to /tmp, proceed without testing subdirs
     #      N -> error: no basedir. Exit.
 
+    # Does CONFIG_backup_dir dir exist? If not, create it.
+    if [[ ! -d "${CONFIG_backup_dir}" ]]; then
+        mkdir -p "${CONFIG_backup_dir}"
+    fi
 
     # -> check base folder
     printf 'base folder %s ... ' "$(dirname "${CONFIG_backup_dir}")"
