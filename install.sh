@@ -23,7 +23,7 @@ upgrade_config_file () {
     temp=$(mktemp /tmp/tmp.XXXXXX)
     (( $? != 0 )) && return 1
     activateIO "$temp"
-    echo "#version=3.0_rc2"
+    echo "#version=3.1"
     echo "# Uncomment to change the default values (shown after =)"
     echo "# WARNING:"
     echo "# This is not true for UMASK, CONFIG_prebackup and CONFIG_postbackup!!!"
