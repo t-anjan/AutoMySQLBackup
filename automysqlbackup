@@ -65,7 +65,7 @@ load_default_config() {
   CONFIG_rotation_weekly=35
   CONFIG_rotation_monthly=150
   CONFIG_mysql_dump_port=3306
-  CONFIG_mysql_dump_usessl='yes'
+  CONFIG_mysql_dump_usessl='no'
   CONFIG_mysql_dump_username='root'
   CONFIG_mysql_dump_password=''
   CONFIG_mysql_dump_host='localhost'
@@ -75,8 +75,8 @@ load_default_config() {
   CONFIG_mysql_dump_use_separate_dirs='yes'
   CONFIG_mysql_dump_compression='gzip'
   CONFIG_mysql_dump_commcomp='no'
-  CONFIG_mysql_dump_latest='no'
-  CONFIG_mysql_dump_latest_clean_filenames='no'
+  CONFIG_mysql_dump_latest='yes'
+  CONFIG_mysql_dump_latest_clean_filenames='yes'
   CONFIG_mysql_dump_max_allowed_packet=''
   CONFIG_mysql_dump_single_transaction='no'
   CONFIG_mysql_dump_master_data=
