@@ -216,7 +216,11 @@ The `.my.cnf` now looks like:
     [mysql]
     user=mysqluser
     password=secret
-
+    
+    [client]
+    user=mysqluser
+    password=secret
+    
     [mysqldump]
     user=mysqluser
     password=secret
