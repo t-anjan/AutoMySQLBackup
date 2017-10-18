@@ -417,11 +417,11 @@ prompt_cron () {
 echo "### Checking archive files for existence, readability and integrity."
 echo
 
-precheck_files=( automysqlbackup 58f71e0698c083a60c76ab3e38ad30b7
-automysqlbackup.conf 203d4903cdc9a800c6daca080c43e8a1
-cron 84dd4d858d3f3de017be1ba78169c337
-README b17740fcd3a5f8579b907a42249a83cd
-LICENSE 39bba7d2cf0ba1036f2a6e2be52fe3f0
+precheck_files=( automysqlbackup 5fe4a75657f6d4bb768a8143ec14bc9b
+automysqlbackup.conf 6d136d3c4b4c005cc92c9479d5ccac6e
+cron 1c03b93477e49466e2963b301827163b
+README.MD fcb7ae5e80e5d2823377f68fe0bffbbb
+LICENSE 5dcdfe25f21119aa5435eab9d0256af7
 )
 
 n=$(( ${#precheck_files[@]}/2 ))
