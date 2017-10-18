@@ -1,49 +1,26 @@
-AutomysqlBackup
--------------------------
-.. INDEX
--------------------------
-Disclaimer
-Install
-Usage
-Configuration Options
-Encryption
-Backup rotation
-Restoring
+AutoMySQLBackup
+===================
+AutoMySQLBackup with a basic configuration will create Daily, Weekly and Monthly backups of one or more of your MySQL databases from one or more of your MySQL servers.
 
+Other Features include:
+ - Email notification of backups
+ - Backup Compression and Encryption
+ - Configurable backup rotation
+ - Incremental database backups
 
+Project originally hosted on **[Sourceforge](https://sourceforge.net/projects/automysqlbackup/)**.
 
-.. DISCLAIMER
+DISCLAIMER
 -------------------------
 I take no resposibility for any data loss or corruption when using this script.
 This script will not help in the event of a hard drive crash. If a copy of the
 backup has not been stored offline or on another PC. You should copy your backups
 offline regularly for best protection.
 
-Happy backing up...
+Happy backing up..
 
 
-
-.. INSTALL
--------------------------
-Extract the package into a directory. If you are reading this you have probably done
-this already.
-
-To install the Automysqlbackup the easy way.
-1. Run the install.sh script.
-2. Edit the /etc/automysqlbackup/myserver.conf file to customise your settings.
-3. See usage section.
-
-To install it manually (the hard way).
-1. Create the /etc/automysqlbackup directory.
-2. Copy in the automysqlbackup.conf file.
-3. Copy the automysqlbackup file to /usr/local/bin and make executable.
-4. cp /etc/automysqlbackup/automysqlbackup.conf /etc/automysqlbackup/myserver.conf
-5. Edit the /etc/automysqlbackup/myserver.conf file to customise your settings.
-6. See usage section.
-
-
-
-.. USAGE
+USAGE
 -------------------------
 
 Automysqlbackup can be run a number of ways, you can choose which is best for you.
@@ -53,7 +30,7 @@ Automysqlbackup can be run a number of ways, you can choose which is best for yo
 #~~~~ Copy From Below Here ~~~~
 #!/bin/sh
 
-/usr/local/bin/automysqlbackup /etc/automysqlbackup/myserver.conf
+/usr/local/bin/automysqlbackup /etc/automysqlbackup/automysqlbackup.conf
 
 chown root.root /var/backup/db* -R
 find /var/backup/db* -type f -exec chmod 400 {} \;
@@ -68,7 +45,7 @@ find /var/backup/db* -type d -exec chmod 700 {} \;
 
 The backup can be run from the command line simply by running the following command.
 
-  automysqlbackup /etc/automysqlbackup/myserver.conf
+  automysqlbackup /etc/automysqlbackup/automysqlbackup.conf
 
 If you don't supply an argument for automysqlbackup, the default configuration
 in the program automysqlbackup will be used unless a global file
@@ -79,6 +56,7 @@ exists.
 
 You can just copy the supplied automysqlbackup.conf as many times as you want
 and use for separate configurations, i.e. for example different mysql servers.
+
 
 !!! NEW !!!
 ----------
@@ -123,7 +101,7 @@ choose what you want to be done with/to those files. At the moment the options a
 - remove the differential backup and its Manifest entry.
 
 
-.. CONFIGURATION OPTIONS
+CONFIGURATION OPTIONS
 -------------------------
 
 !! "automysqlbackup" program contains a default configuration that should not be changed:
@@ -165,9 +143,7 @@ CONFIG_encrypt_password='password0123'
 
 Please take a look at the supplied "automysqlbackup.conf" for information about the configuration options.
 
-
-
-.. ENCRYPTION
+ENCRYPTION
 -------------------------
 
 To decrypt run (replace bz2 with gz if using gzip):
@@ -175,8 +151,7 @@ To decrypt run (replace bz2 with gz if using gzip):
 openssl enc -aes-256-cbc -d -in encrypted_file_name(ex: *.enc.bz2) -out outputfilename.bz2 -pass pass:PASSWORD-USED-TO-ENCRYPT
 
 
-
-.. BACKUP ROTATION
+BACKUP ROTATION
 -------------------------
 
 Daily Backups are rotated weekly.
@@ -187,9 +162,7 @@ Monthly Backups are rotated on a 5 month cycle, unless otherwise specified via C
 
 Suggestion: It may be a good idea to copy monthly backups offline or to another server.
 
-
-
-.. RESTORING
+RESTORING
 -------------------------
 
 Firstly you will need to uncompress the backup file and decrypt it if encryption was used (see encryption section).
@@ -205,3 +178,64 @@ or
   mysql --user=username --pass=password --host=dbserver -e "source /path/file.sql" database
 
 NOTE: Make sure you use "<" and not ">" in the above command because you are piping the file.sql to mysql and not the other way around.
+
+
+What is special about this fork?
+-------------
+
+AutoMySQLBackup uses the **[mysqldump](https://dev.mysql.com/doc/refman/5.7/en/mysqldump.html)** tool that comes as part of MySQL to generate the backups. 
+
+Historically, the script passed the MySQL username and password utilized for making the backups to mysqldump via command-line. As of MySQL 5.6, passing credentials via command-line is **considered insecure** and attempts to do so generates warning messages that disrupt normal processing of the AutoMySQLBackup script and sometimes breaks the script altogether, causing backups to fail.
+
+**Example:**
+
+    [root@server ~]# automysqlbackup
+    Invoking backup method.
+    Parsed config file "/etc/automysqlbackup/automysqlbackup.conf"
+    ...
+    ....
+    ###### WARNING ######
+    Errors reported during AutoMySQLBackup execution.. Backup failed
+    Error log below..
+    mysql: [Warning] Using a password on the command line interface can be insecure.
+    mysqldump: [Warning] Using a password on the command line interface can be insecure.
+    mysqldump: [Warning] Using a password on the command line interface can be insecure.
+
+Several fixes have been mentioned [here](https://github.com/rcruz/AutoMySQLBackup/issues/1) and [here](http://www.redeo.nl/2013/11/automysqlbackup-warning-using-password-command-line-interface-can-insecure/). 
+
+I tried assimilating them and yet the script failed with MySQL 5.7.x.
+
+The tricks that finally saved the day was found in this [StackOverflow post](https://stackoverflow.com/questions/9293042/how-to-perform-a-mysqldump-without-a-password-prompt). It involves specifying the credentials in a file named `.my.cnf` under your (or root's) home folder and making the file readable to only yourself and your group (`chmod 0640`). 
+
+    [mysql]
+    user=mysqluser
+    password=secret
+
+This allows you to use the mysql client from the command-line without specifying credentials. I've always used this trick to facilitate quick login to MySQL. Little did I know that just by repeating the same in .my.cnf and renaming one of the block headers to mysqldump, you can achieve the same effect for mysqldump as well.
+
+The `.my.cnf` now looks like:
+
+    [mysql]
+    user=mysqluser
+    password=secret
+
+    [mysqldump]
+    user=mysqluser
+    password=secret
+
+<i class="icon-warning"></i>However, this takes care of only one part of the problem. The script still halts with the warning, as it is hard-coded to pass the credentials to mysqldump. That's where this fork comes in. All instances of credential arguments have been removed from the script.
+
+Installation
+-------------------
+ 1. Check-out / clone git repository.
+ 2. Run **install.sh**. This will replace any existing versions of `automysqlbackup` script in your `/usr/local/bin`.
+ 3. Do your configuration in `/etc/automysqlbackup/automysqlbackup.conf`.
+ 4. Run the script and/or add it to a cron job.
+ 
+ To install it manually (the hard way).
+ 1. Create the /etc/automysqlbackup directory.
+ 2. Copy in the automysqlbackup.conf file.
+ 3. Copy the automysqlbackup file to /usr/local/bin and make executable.
+ 4. cp /etc/automysqlbackup/automysqlbackup.conf /etc/automysqlbackup/automysqlbackup.conf
+ 5. Edit the /etc/automysqlbackup/automysqlbackup.conf file to customise your settings.
+ 6. See usage section.
