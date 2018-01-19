@@ -198,34 +198,8 @@ Historically, the script passed the MySQL username and password utilized for mak
     mysqldump: [Warning] Using a password on the command line interface can be insecure.
     mysqldump: [Warning] Using a password on the command line interface can be insecure.
 ```
-Several fixes have been mentioned [here](https://github.com/rcruz/AutoMySQLBackup/issues/1) and [here](http://www.redeo.nl/2013/11/automysqlbackup-warning-using-password-command-line-interface-can-insecure/). 
 
-I tried assimilating them and yet the script failed with MySQL 5.7.x.
-
-The tricks that finally saved the day was found in this [StackOverflow post](https://stackoverflow.com/questions/9293042/how-to-perform-a-mysqldump-without-a-password-prompt). It involves specifying the credentials in a file named `.my.cnf` under your (or root's) home folder and making the file readable to only yourself and your group (`chmod 0640`). 
-```
-    [mysql]
-    user=mysqluser
-    password=secret
-```
-This allows you to use the mysql client from the command-line without specifying credentials. I've always used this trick to facilitate quick login to MySQL. Little did I know that just by repeating the same in .my.cnf and renaming one of the block headers to mysqldump, you can achieve the same effect for mysqldump as well.
-
-The `.my.cnf` now looks like:
-```
-
-    [mysql]
-    user=mysqluser
-    password=secret
-    
-    [client]
-    user=mysqluser
-    password=secret
-    
-    [mysqldump]
-    user=mysqluser
-    password=secret
-```
-![Warning](http://www.freeiconspng.com/uploads/warning-icon-5.png)However, this takes care of only one part of the problem. The script still halts with the warning, as it is hard-coded to pass the credentials to mysqldump. That's where this fork comes in. All instances of credential arguments have been removed from the script.
+Solution here: https://stackoverflow.com/a/20854048/623581 .
 
 ### Installation
 
