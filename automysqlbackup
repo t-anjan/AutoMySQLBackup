@@ -437,13 +437,13 @@ backup_local_files () {
 # @deps:	load_default_config
 parse_configuration () {
     # OPT string for use with mysqldump ( see man mysqldump )
-    opt=( '--quote-names' '--opt' '--skip-lock-tables' '--skip-add-locks' '--events' )
+    opt=( '--quote-names' '--opt' '--skip-lock-tables' '--skip-add-locks' '--events' '--set-gtid-purged=OFF' )
 
     # OPT string for use with mysql (see man mysql )
     mysql_opt=()
 
     # OPT string for use with mysqldump fullschema
-    opt_fullschema=( '--all-databases' '--routines' '--no-data' )
+    opt_fullschema=( '--all-databases' '--routines' '--no-data' '--set-gtid-purged=OFF' )
 
 	# OPT string for use with mysqlstatus
 	opt_dbstatus=( '--status' )
